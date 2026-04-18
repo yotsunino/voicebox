@@ -55,20 +55,23 @@ def build_server(cuda=False):
     # numpy 2.x / torch ABI mismatch fix: install memmove fallback for
     # torch.from_numpy() before the app starts. Runtime hooks run after
     # FrozenImporter is registered so frozen torch/numpy are importable.
+    # Paths are passed relative to backend_dir because os.chdir(backend_dir)
+    # runs before PyInstaller. Absolute paths would get baked into the
+    # generated .spec, breaking reproducible builds on other machines / CI.
     args.extend(
         [
             "--runtime-hook",
-            str(backend_dir / "pyi_rth_numpy_compat.py"),
+            "pyi_rth_numpy_compat.py",
             # Stub torch.compiler.disable before transformers imports
             # flex_attention, which otherwise triggers torch._dynamo →
             # torch._numpy._ufuncs and crashes at module load under
             # PyInstaller. See pyi_rth_torch_compiler_disable.py.
             "--runtime-hook",
-            str(backend_dir / "pyi_rth_torch_compiler_disable.py"),
+            "pyi_rth_torch_compiler_disable.py",
             # Per-module collection overrides (e.g. forcing scipy.stats._distn_infrastructure
             # to bundle .py source alongside .pyc so the runtime hook can source-patch it).
             "--additional-hooks-dir",
-            str(backend_dir / "pyi_hooks"),
+            "pyi_hooks",
         ]
     )
 
