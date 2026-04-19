@@ -26,7 +26,7 @@ Every model is described by a `ModelConfig` entry in `backend/backends/__init__.
 | **Chatterbox Turbo** | `chatterbox_turbo` | `ResembleAI/chatterbox-turbo` | 1.5 GB | ~1.5 GB | English |
 | **TADA 1B** | `tada` | `HumeAI/tada-1b` | 4 GB | ~4 GB | English |
 | **TADA 3B Multilingual** | `tada` | `HumeAI/tada-3b-ml` | 8 GB | ~8 GB | 10 |
-| **Kokoro 82M** | `kokoro` | `hexgrad/Kokoro-82M` | 350 MB | ~150 MB | 9 |
+| **Kokoro 82M** | `kokoro` | `hexgrad/Kokoro-82M` | 350 MB | ~150 MB | 8 |
 
 On Apple Silicon, Qwen TTS uses MLX-optimized repos from `mlx-community` instead of the PyTorch repos. The backend picks automatically via `get_backend_type()`.
 
@@ -59,7 +59,7 @@ Set `VOICEBOX_MODELS_DIR` to override.
 
 Downloads stream progress to the frontend via Server-Sent Events. The progress pipeline has three pieces:
 
-**`ProgressManager`** (`backend/services/progress.py`) — in-memory map of `model_name → {current, total, filename, status}`.
+**`ProgressManager`** (`backend/utils/progress.py`) — in-memory map of `model_name → {current, total, filename, status}`.
 
 **`HFProgressTracker`** — context manager that intercepts HuggingFace Hub downloads to emit byte-level progress. Needed because `huggingface_hub` silently disables tqdm in frozen PyInstaller builds.
 

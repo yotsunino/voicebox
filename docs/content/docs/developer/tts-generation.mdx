@@ -50,7 +50,7 @@ class ModelConfig:
     size_mb: int = 0
     needs_trim: bool = False
     supports_instruct: bool = False
-    languages: list[str] = ["en"]
+    languages: list[str] = field(default_factory=lambda: ["en"])
 ```
 
 Registry helpers in `backends/__init__.py` replace what used to be per-engine `if/elif` chains:
@@ -223,7 +223,7 @@ The model management API (`/models/load`, `/models/unload`) lets users free VRAM
 - **Voice prompt caching** saves ~1-2s on repeated generations from the same profile.
 - **Model pinning** — the first load is slow (download + load), subsequent generations reuse the cached model in memory.
 
-### Per-engine VRAM (approximate, 1080p samples)
+### Per-engine VRAM (approximate, on CUDA)
 
 | Engine | VRAM |
 |--------|------|
