@@ -9,7 +9,9 @@ export const dynamic = 'force-dynamic';
 // to GitHub or direct asset URLs.
 const PLATFORM_ALIAS: Record<string, string> = {
   'mac-arm': 'macArm',
+  macArm: 'macArm',
   'mac-intel': 'macIntel',
+  macIntel: 'macIntel',
   windows: 'windows',
 };
 

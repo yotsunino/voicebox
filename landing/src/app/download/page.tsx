@@ -13,7 +13,7 @@ import Link from 'next/link';
 import { useEffect, useMemo, useState } from 'react';
 import { AppleIcon, LinuxIcon, WindowsIcon } from '@/components/PlatformIcons';
 import { Button } from '@/components/ui/button';
-import { DONATE_URL, GITHUB_REPO } from '@/lib/constants';
+import { DONATE_URL, GITHUB_RELEASES_PAGE, GITHUB_REPO } from '@/lib/constants';
 import type { DownloadLinks } from '@/lib/releases';
 
 type Platform = keyof DownloadLinks;
@@ -168,11 +168,11 @@ export default function DownloadPage() {
             ) : (
               <>
                 <h1 className="text-4xl md:text-5xl font-semibold tracking-tight text-foreground mb-4">
-                  Download Voicebox
+                  {linksError ? "We couldn't load the latest release." : 'Download Voicebox'}
                 </h1>
                 <p className="text-lg text-muted-foreground">
                   {linksError
-                    ? "We couldn't reach the release server. Pick your platform manually below."
+                    ? 'Our release server is temporarily unreachable. Please try again in a moment.'
                     : 'Pick your platform to get started.'}
                 </p>
               </>
@@ -181,42 +181,59 @@ export default function DownloadPage() {
         </div>
 
         {/* Platform buttons — always visible as a fallback */}
-        <div className="mt-12 rounded-xl border border-border bg-card/60 backdrop-blur-sm p-6">
-          <h2 className="text-sm font-medium text-foreground mb-4">
-            {triggered ? 'Download not working?' : 'Choose your platform'}
-          </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            {PLATFORMS.map((meta) => {
-              const isLinux = meta.key === 'linux';
-              const url = isLinux ? '/linux-install' : links?.[meta.key];
-              const isActive = meta.key === platform;
-              const disabled = !isLinux && !url;
-              return (
-                <a
-                  key={meta.key}
-                  href={url ?? '#'}
-                  {...(isLinux ? {} : { download: true })}
-                  aria-disabled={disabled}
-                  onClick={(e) => {
-                    if (disabled) e.preventDefault();
-                  }}
-                  className={`flex items-center rounded-xl border px-5 py-4 transition-all group ${
-                    isActive
-                      ? 'border-accent/40 bg-accent/5 hover:border-accent/60'
-                      : 'border-border bg-card/40 hover:border-accent/30 hover:bg-card'
-                  } ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
-                >
-                  <meta.icon className="h-6 w-6 shrink-0 text-muted-foreground group-hover:text-foreground transition-colors" />
-                  <div className="ml-4 flex-1">
-                    <div className="text-sm font-medium text-foreground">{meta.label}</div>
-                    <div className="text-xs text-muted-foreground">{meta.description}</div>
-                  </div>
-                  <DownloadIcon className="h-4 w-4 text-muted-foreground/60 group-hover:text-accent transition-colors" />
-                </a>
-              );
-            })}
+        {linksError ? (
+          <div className="mt-12 rounded-xl border border-border bg-card/60 backdrop-blur-sm p-6 text-center">
+            <p className="text-sm text-muted-foreground mb-4">
+              If this keeps happening, you can{' '}
+              <a
+                href={`${GITHUB_RELEASES_PAGE}/latest`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-accent underline underline-offset-2 hover:text-accent/80"
+              >
+                browse releases on GitHub
+              </a>
+              {' '}and grab the build for your platform manually.
+            </p>
           </div>
-        </div>
+        ) : (
+          <div className="mt-12 rounded-xl border border-border bg-card/60 backdrop-blur-sm p-6">
+            <h2 className="text-sm font-medium text-foreground mb-4">
+              {triggered ? 'Download not working?' : 'Choose your platform'}
+            </h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {PLATFORMS.map((meta) => {
+                const isLinux = meta.key === 'linux';
+                const url = isLinux ? '/linux-install' : links?.[meta.key];
+                const isActive = meta.key === platform;
+                const disabled = !isLinux && !url;
+                return (
+                  <a
+                    key={meta.key}
+                    href={url ?? '#'}
+                    {...(isLinux ? {} : { download: true })}
+                    aria-disabled={disabled}
+                    onClick={(e) => {
+                      if (disabled) e.preventDefault();
+                    }}
+                    className={`flex items-center rounded-xl border px-5 py-4 transition-all group ${
+                      isActive
+                        ? 'border-accent/40 bg-accent/5 hover:border-accent/60'
+                        : 'border-border bg-card/40 hover:border-accent/30 hover:bg-card'
+                    } ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+                  >
+                    <meta.icon className="h-6 w-6 shrink-0 text-muted-foreground group-hover:text-foreground transition-colors" />
+                    <div className="ml-4 flex-1">
+                      <div className="text-sm font-medium text-foreground">{meta.label}</div>
+                      <div className="text-xs text-muted-foreground">{meta.description}</div>
+                    </div>
+                    <DownloadIcon className="h-4 w-4 text-muted-foreground/60 group-hover:text-accent transition-colors" />
+                  </a>
+                );
+              })}
+            </div>
+          </div>
+        )}
 
         {/* Donate — prominent, heartfelt, post-click context */}
         <div className="mt-16 rounded-2xl border border-border bg-gradient-to-br from-card via-card/80 to-background backdrop-blur-sm p-8 md:p-10 overflow-hidden relative">
