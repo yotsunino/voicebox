@@ -21,6 +21,46 @@
     "settings": "Settings",
     "updateBadge": "Update"
   },
+  "profiles": {
+    "card": {
+      "noDescription": "No description",
+      "designed": "designed",
+      "export": "Export profile",
+      "edit": "Edit profile",
+      "delete": "Delete profile",
+      "selectLabel": "{{name}}, {{language}}. Select as voice for generation.",
+      "selectLabelSelected": "{{name}}, {{language}}. Selected as voice for generation."
+    },
+    "deleteDialog": {
+      "title": "Delete Profile",
+      "body": "Are you sure you want to delete \"{{name}}\"? This action cannot be undone.",
+      "deleting": "Deleting…"
+    }
+  },
+  "history": {
+    "deleteDialog": {
+      "title": "Delete Generation",
+      "body": "Are you sure you want to delete this generation from \"{{name}}\"? This action cannot be undone.",
+      "deleting": "Deleting…"
+    },
+    "clearFailedDialog": {
+      "title": "Clear failed generations",
+      "body_one": "This will permanently delete {{count}} failed generation from your history. This cannot be undone.",
+      "body_other": "This will permanently delete {{count}} failed generations from your history. This cannot be undone.",
+      "clearing": "Clearing…",
+      "clearAll": "Clear all"
+    },
+    "importDialog": {
+      "title": "Import Generation",
+      "body": "Import the generation from \"{{name}}\". This will add it to your history.",
+      "importing": "Importing…",
+      "action": "Import"
+    },
+    "effectsDialog": {
+      "title": "Apply Effects",
+      "body": "Configure post-processing effects to apply to this generation. A new version will be created."
+    }
+  },
   "generation": {
     "placeholder": {
       "storyWithEffects": "Generate speech for \"{{name}}\"… (type / for effects)",

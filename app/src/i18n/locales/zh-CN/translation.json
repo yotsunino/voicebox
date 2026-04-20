@@ -21,6 +21,46 @@
     "settings": "设置",
     "updateBadge": "更新"
   },
+  "profiles": {
+    "card": {
+      "noDescription": "无描述",
+      "designed": "设计",
+      "export": "导出声音档案",
+      "edit": "编辑声音档案",
+      "delete": "删除声音档案",
+      "selectLabel": "{{name}},{{language}}。选择用于生成的声音。",
+      "selectLabelSelected": "{{name}},{{language}}。已选为用于生成的声音。"
+    },
+    "deleteDialog": {
+      "title": "删除声音档案",
+      "body": "确定要删除 \"{{name}}\" 吗?此操作不可撤销。",
+      "deleting": "删除中…"
+    }
+  },
+  "history": {
+    "deleteDialog": {
+      "title": "删除生成",
+      "body": "确定要删除来自 \"{{name}}\" 的这次生成吗?此操作不可撤销。",
+      "deleting": "删除中…"
+    },
+    "clearFailedDialog": {
+      "title": "清除失败的生成",
+      "body_one": "这将从历史记录中永久删除 {{count}} 条失败的生成。此操作不可撤销。",
+      "body_other": "这将从历史记录中永久删除 {{count}} 条失败的生成。此操作不可撤销。",
+      "clearing": "清除中…",
+      "clearAll": "全部清除"
+    },
+    "importDialog": {
+      "title": "导入生成",
+      "body": "从 \"{{name}}\" 导入生成。这将添加到您的历史记录中。",
+      "importing": "导入中…",
+      "action": "导入"
+    },
+    "effectsDialog": {
+      "title": "应用效果",
+      "body": "配置应用于此次生成的后处理效果。将会创建一个新版本。"
+    }
+  },
   "generation": {
     "placeholder": {
       "storyWithEffects": "为 \"{{name}}\" 生成语音… (输入 / 使用效果)",

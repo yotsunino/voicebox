@@ -14,6 +14,7 @@ import {
   Wand2,
 } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { EffectsChainEditor } from '@/components/Effects/EffectsChainEditor';
 import { Button } from '@/components/ui/button';
@@ -88,6 +89,7 @@ function AudioBars({ mode }: { mode: 'idle' | 'generating' | 'playing' }) {
 
 // NEW ALTERNATE HISTORY VIEW - FIXED HEIGHT ROWS WITH INFINITE SCROLL
 export function HistoryTable() {
+  const { t } = useTranslation();
   const [page, setPage] = useState(0);
   const [allHistory, setAllHistory] = useState<HistoryResponse[]>([]);
   const [total, setTotal] = useState(0);
@@ -678,7 +680,9 @@ export function HistoryTable() {
                             </Button>
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end">
-                            <DropdownMenuItem onClick={() => handlePlay(gen.id, gen.text, gen.profile_id)}>
+                            <DropdownMenuItem
+                              onClick={() => handlePlay(gen.id, gen.text, gen.profile_id)}
+                            >
                               <Play className="mr-2 h-4 w-4" />
                               Play
                             </DropdownMenuItem>
@@ -802,10 +806,9 @@ export function HistoryTable() {
       <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Delete Generation</DialogTitle>
+            <DialogTitle>{t('history.deleteDialog.title')}</DialogTitle>
             <DialogDescription>
-              Are you sure you want to delete this generation from "{generationToDelete?.name}"?
-              This action cannot be undone.
+              {t('history.deleteDialog.body', { name: generationToDelete?.name })}
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
@@ -816,14 +819,14 @@ export function HistoryTable() {
                 setGenerationToDelete(null);
               }}
             >
-              Cancel
+              {t('common.cancel')}
             </Button>
             <Button
               variant="destructive"
               onClick={handleDeleteConfirm}
               disabled={deleteGeneration.isPending}
             >
-              {deleteGeneration.isPending ? 'Deleting...' : 'Delete'}
+              {deleteGeneration.isPending ? t('history.deleteDialog.deleting') : t('common.delete')}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -832,23 +835,23 @@ export function HistoryTable() {
       <Dialog open={clearFailedDialogOpen} onOpenChange={setClearFailedDialogOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Clear failed generations</DialogTitle>
+            <DialogTitle>{t('history.clearFailedDialog.title')}</DialogTitle>
             <DialogDescription>
-              This will permanently delete {failedCount} failed{' '}
-              {failedCount === 1 ? 'generation' : 'generations'} from your history. This cannot be
-              undone.
+              {t('history.clearFailedDialog.body', { count: failedCount })}
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
             <Button variant="outline" onClick={() => setClearFailedDialogOpen(false)}>
-              Cancel
+              {t('common.cancel')}
             </Button>
             <Button
               variant="destructive"
               onClick={handleClearFailedConfirm}
               disabled={clearFailed.isPending}
             >
-              {clearFailed.isPending ? 'Clearing...' : 'Clear all'}
+              {clearFailed.isPending
+                ? t('history.clearFailedDialog.clearing')
+                : t('history.clearFailedDialog.clearAll')}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -857,9 +860,9 @@ export function HistoryTable() {
       <Dialog open={importDialogOpen} onOpenChange={setImportDialogOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Import Generation</DialogTitle>
+            <DialogTitle>{t('history.importDialog.title')}</DialogTitle>
             <DialogDescription>
-              Import the generation from "{selectedFile?.name}". This will add it to your history.
+              {t('history.importDialog.body', { name: selectedFile?.name })}
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
@@ -873,13 +876,15 @@ export function HistoryTable() {
                 }
               }}
             >
-              Cancel
+              {t('common.cancel')}
             </Button>
             <Button
               onClick={handleImportConfirm}
               disabled={importGeneration.isPending || !selectedFile}
             >
-              {importGeneration.isPending ? 'Importing...' : 'Import'}
+              {importGeneration.isPending
+                ? t('history.importDialog.importing')
+                : t('history.importDialog.action')}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -888,11 +893,8 @@ export function HistoryTable() {
       <Dialog open={effectsDialogOpen} onOpenChange={setEffectsDialogOpen}>
         <DialogContent className="max-w-md">
           <DialogHeader>
-            <DialogTitle>Apply Effects</DialogTitle>
-            <DialogDescription>
-              Configure post-processing effects to apply to this generation. A new version will be
-              created.
-            </DialogDescription>
+            <DialogTitle>{t('history.effectsDialog.title')}</DialogTitle>
+            <DialogDescription>{t('history.effectsDialog.body')}</DialogDescription>
           </DialogHeader>
           {effectsTargetVersions.length > 1 && (
             <div className="space-y-1.5">
