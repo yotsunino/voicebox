@@ -21,6 +21,35 @@
     "settings": "Settings",
     "updateBadge": "Update"
   },
+  "voicesTab": {
+    "title": "Voices",
+    "loading": "Loading voices…",
+    "searchPlaceholder": "Search voices…",
+    "newVoice": "New Voice",
+    "avatarAlt": "{{name}} avatar",
+    "selectChannels": "Select channels…",
+    "channelDefaultLabel": "{{name}} (Default)",
+    "columns": {
+      "name": "Name",
+      "language": "Language",
+      "generations": "Generations",
+      "samples": "Samples",
+      "effects": "Effects",
+      "channels": "Channels"
+    }
+  },
+  "voiceInspector": {
+    "loading": "Loading…",
+    "defaultEffectsHint": "Applied automatically to new generations with this voice.",
+    "fields": {
+      "description": "Description"
+    },
+    "toast": {
+      "invalidImageFormat": "Please select PNG, JPG, or WebP",
+      "avatarUpdated": "Avatar updated",
+      "savedDescription": "\"{{name}}\" saved."
+    }
+  },
   "audioChannels": {
     "title": "Audio Channels",
     "newChannel": "New Channel",

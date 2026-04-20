@@ -21,6 +21,35 @@
     "settings": "设置",
     "updateBadge": "更新"
   },
+  "voicesTab": {
+    "title": "声音",
+    "loading": "加载声音中…",
+    "searchPlaceholder": "搜索声音……",
+    "newVoice": "新建声音",
+    "avatarAlt": "{{name}} 的头像",
+    "selectChannels": "选择通道……",
+    "channelDefaultLabel": "{{name}}(默认)",
+    "columns": {
+      "name": "名称",
+      "language": "语言",
+      "generations": "生成次数",
+      "samples": "样本",
+      "effects": "效果",
+      "channels": "通道"
+    }
+  },
+  "voiceInspector": {
+    "loading": "加载中…",
+    "defaultEffectsHint": "自动应用于使用此声音的新生成。",
+    "fields": {
+      "description": "描述"
+    },
+    "toast": {
+      "invalidImageFormat": "请选择 PNG、JPG 或 WebP 格式",
+      "avatarUpdated": "头像已更新",
+      "savedDescription": "\"{{name}}\" 已保存。"
+    }
+  },
   "audioChannels": {
     "title": "音频通道",
     "newChannel": "新建通道",
