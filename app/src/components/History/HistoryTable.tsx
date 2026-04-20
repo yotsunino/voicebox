@@ -897,13 +897,15 @@ export function HistoryTable() {
           </DialogHeader>
           {effectsTargetVersions.length > 1 && (
             <div className="space-y-1.5">
-              <label className="text-xs font-medium text-muted-foreground">Source</label>
+              <label className="text-xs font-medium text-muted-foreground">
+                {t('history.effectsDialog.sourceLabel')}
+              </label>
               <Select
                 value={effectsSourceVersionId ?? ''}
                 onValueChange={(val) => setEffectsSourceVersionId(val || null)}
               >
                 <SelectTrigger className="h-8 text-xs">
-                  <SelectValue placeholder="Select source version" />
+                  <SelectValue placeholder={t('history.effectsDialog.sourcePlaceholder')} />
                 </SelectTrigger>
                 <SelectContent>
                   {effectsTargetVersions.map((v) => (
@@ -925,13 +927,15 @@ export function HistoryTable() {
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setEffectsDialogOpen(false)}>
-              Cancel
+              {t('common.cancel')}
             </Button>
             <Button
               onClick={handleApplyEffectsConfirm}
               disabled={applyingEffects || effectsChain.length === 0}
             >
-              {applyingEffects ? 'Applying...' : 'Apply'}
+              {applyingEffects
+                ? t('history.effectsDialog.applying')
+                : t('history.effectsDialog.apply')}
             </Button>
           </DialogFooter>
         </DialogContent>

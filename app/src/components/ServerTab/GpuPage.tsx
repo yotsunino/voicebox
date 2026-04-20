@@ -117,6 +117,12 @@ export function GpuPage() {
   const [error, setError] = useState<string | null>(null);
   const [downloadProgress, setDownloadProgress] = useState<CudaDownloadProgress | null>(null);
   const healthPollRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  // Hold the latest `t` in a ref so the CUDA progress SSE effect below doesn't
+  // tear down and reconnect the EventSource every time the language changes.
+  const tRef = useRef(t);
+  useEffect(() => {
+    tRef.current = t;
+  }, [t]);
 
   const {
     data: cudaStatus,
@@ -159,7 +165,7 @@ export function GpuPage() {
           refetchCudaStatus();
         } else if (data.status === 'error') {
           eventSource.close();
-          setError(data.error || t('settings.gpu.errors.downloadFailed'));
+          setError(data.error || tRef.current('settings.gpu.errors.downloadFailed'));
           setDownloadProgress(null);
           refetchCudaStatus();
         }
@@ -175,7 +181,7 @@ export function GpuPage() {
     return () => {
       eventSource.close();
     };
-  }, [cudaDownloading, serverUrl, refetchCudaStatus, t]);
+  }, [cudaDownloading, serverUrl, refetchCudaStatus]);
 
   const clearHealthPolling = useCallback(() => {
     if (healthPollRef.current) {

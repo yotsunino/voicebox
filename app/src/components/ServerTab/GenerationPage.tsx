@@ -58,7 +58,7 @@ export function GenerationPage() {
           description={t('settings.generation.chunkLimit.description')}
           action={
             <span className="text-sm tabular-nums text-muted-foreground">
-              {t('settings.generation.chunkLimit.value', { count: maxChunkChars })}
+              {t('settings.generation.chunkLimit.value', { chars: maxChunkChars })}
             </span>
           }
         >

@@ -1,6 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { AlertCircle, ArrowUpRight, Book, Download, Loader2, RefreshCw } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Trans, useTranslation } from 'react-i18next';
 import * as z from 'zod';
@@ -37,14 +37,25 @@ export function GeneralPage() {
   const { toast } = useToast();
   const { data: health, isLoading, error: healthError } = useServerHealth();
 
+  const resolver = useMemo(
+    () => zodResolver(makeConnectionSchema(t('settings.general.serverUrl.invalidUrl'))),
+    [t],
+  );
   const form = useForm<ConnectionFormValues>({
-    resolver: zodResolver(makeConnectionSchema(t('settings.general.serverUrl.invalidUrl'))),
+    resolver,
     defaultValues: { serverUrl },
   });
 
   useEffect(() => {
     form.reset({ serverUrl });
   }, [serverUrl, form]);
+
+  // Re-run validation when the locale changes so existing error messages retranslate.
+  useEffect(() => {
+    if (form.formState.errors.serverUrl) {
+      form.trigger('serverUrl');
+    }
+  }, [t, form]);
 
   const { isDirty } = form.formState;
 
@@ -171,7 +182,7 @@ export function GeneralPage() {
                 onCheckedChange={(checked: boolean) => {
                   setMode(checked ? 'remote' : 'local');
                   toast({
-                    title: t('settings.general.keepServerRunning.updatedTitle'),
+                    title: t('settings.general.networkAccess.updatedTitle'),
                     description: checked
                       ? t('settings.general.networkAccess.enabled')
                       : t('settings.general.networkAccess.disabled'),
@@ -247,20 +258,22 @@ function UpdatesSection() {
   const { t } = useTranslation();
   const platform = usePlatform();
   const { status, checkForUpdates, downloadAndInstall, restartAndInstall } = useAutoUpdater(false);
-  const [currentVersion, setCurrentVersion] = useState<string>('');
+  const [currentVersion, setCurrentVersion] = useState<string | null>('');
   const isDev = !import.meta.env?.PROD;
 
   useEffect(() => {
     platform.metadata
       .getVersion()
       .then(setCurrentVersion)
-      .catch(() => setCurrentVersion(t('common.unknown')));
-  }, [platform, t]);
+      .catch(() => setCurrentVersion(null));
+  }, [platform]);
+
+  const versionLabel = currentVersion ?? t('common.unknown');
 
   return (
     <SettingSection
       title={t('settings.general.updates.title')}
-      description={`v${currentVersion}${isDev ? t('settings.general.updates.devSuffix') : ''}`}
+      description={`v${versionLabel}${isDev ? t('settings.general.updates.devSuffix') : ''}`}
     >
       {isDev ? (
         <SettingRow

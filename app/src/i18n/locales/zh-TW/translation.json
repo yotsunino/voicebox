@@ -518,7 +518,11 @@
     },
     "effectsDialog": {
       "title": "套用效果",
-      "body": "設定要套用於此生成的後製效果。將會建立一個新版本。"
+      "body": "設定要套用於此生成的後製效果。將會建立一個新版本。",
+      "sourceLabel": "來源",
+      "sourcePlaceholder": "選擇來源版本",
+      "apply": "套用",
+      "applying": "套用中…"
     }
   },
   "generation": {
@@ -598,6 +602,7 @@
       "networkAccess": {
         "title": "允許網路存取",
         "description": "讓網路上的其他裝置可存取伺服器。變更後請重新啟動應用程式。",
+        "updatedTitle": "設定已更新",
         "enabled": "已啟用網路存取。重新啟動應用程式以套用。",
         "disabled": "已停用網路存取。重新啟動應用程式以套用。"
       },
@@ -608,7 +613,7 @@
       },
       "updates": {
         "title": "應用程式更新",
-        "devSuffix": "(開發版)",
+        "devSuffix": " (開發版)",
         "devMode": {
           "title": "開發模式",
           "description": "開發模式下已停用自動更新。"
@@ -651,7 +656,7 @@
       "chunkLimit": {
         "title": "自動分塊上限",
         "description": "長文字會在句子邊界處分塊。較低的值可以提升長輸出的品質。",
-        "value": "{{count}} 字元"
+        "value": "{{chars}} 字元"
       },
       "crossfade": {
         "title": "區塊間淡入淡出",

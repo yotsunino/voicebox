@@ -518,7 +518,11 @@
     },
     "effectsDialog": {
       "title": "Apply Effects",
-      "body": "Configure post-processing effects to apply to this generation. A new version will be created."
+      "body": "Configure post-processing effects to apply to this generation. A new version will be created.",
+      "sourceLabel": "Source",
+      "sourcePlaceholder": "Select source version",
+      "apply": "Apply",
+      "applying": "Applying…"
     }
   },
   "generation": {
@@ -598,6 +602,7 @@
       "networkAccess": {
         "title": "Allow network access",
         "description": "Makes the server accessible from other devices on your network. Restart the app after changing.",
+        "updatedTitle": "Setting updated",
         "enabled": "Network access enabled. Restart the app to apply.",
         "disabled": "Network access disabled. Restart the app to apply."
       },
@@ -651,7 +656,7 @@
       "chunkLimit": {
         "title": "Auto-chunking limit",
         "description": "Long text is split into chunks at sentence boundaries. Lower values can improve quality for long outputs.",
-        "value": "{{count}} chars"
+        "value": "{{chars}} chars"
       },
       "crossfade": {
         "title": "Chunk crossfade",

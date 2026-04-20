@@ -6,7 +6,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { SUPPORTED_LANGUAGES } from '@/i18n';
+import { type LanguageCode, SUPPORTED_LANGUAGES } from '@/i18n';
 
 export function LanguageSelect() {
   const { i18n } = useTranslation();
@@ -16,7 +16,7 @@ export function LanguageSelect() {
     <Select
       value={current}
       onValueChange={(value) => {
-        void i18n.changeLanguage(value);
+        void i18n.changeLanguage(value as LanguageCode);
       }}
     >
       <SelectTrigger className="h-9 w-[180px]">

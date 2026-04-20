@@ -518,7 +518,11 @@
     },
     "effectsDialog": {
       "title": "应用效果",
-      "body": "配置应用于此次生成的后处理效果。将会创建一个新版本。"
+      "body": "配置应用于此次生成的后处理效果。将会创建一个新版本。",
+      "sourceLabel": "来源",
+      "sourcePlaceholder": "选择来源版本",
+      "apply": "应用",
+      "applying": "应用中…"
     }
   },
   "generation": {
@@ -598,6 +602,7 @@
       "networkAccess": {
         "title": "允许网络访问",
         "description": "使网络上的其他设备可以访问服务器。更改后请重启应用。",
+        "updatedTitle": "设置已更新",
         "enabled": "已启用网络访问。重启应用以应用更改。",
         "disabled": "已禁用网络访问。重启应用以应用更改。"
       },
@@ -608,7 +613,7 @@
       },
       "updates": {
         "title": "应用更新",
-        "devSuffix": "(开发版)",
+        "devSuffix": " (开发版)",
         "devMode": {
           "title": "开发模式",
           "description": "开发模式下已禁用自动更新。"
@@ -651,7 +656,7 @@
       "chunkLimit": {
         "title": "自动分块上限",
         "description": "长文本在句子边界处分块。较低的值可以提高长输出的质量。",
-        "value": "{{count}} 字符"
+        "value": "{{chars}} 字符"
       },
       "crossfade": {
         "title": "块间淡入淡出",

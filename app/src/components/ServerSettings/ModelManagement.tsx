@@ -431,7 +431,7 @@ export function ModelManagement() {
   // Derive license from HF data
   const license =
     hfModelInfo?.cardData?.license ||
-    hfModelInfo?.tags?.find((t) => t.startsWith('license:'))?.replace('license:', '');
+    hfModelInfo?.tags?.find((tag) => tag.startsWith('license:'))?.replace('license:', '');
 
   return (
     <div className="flex flex-col h-full">
@@ -522,7 +522,7 @@ export function ModelManagement() {
           <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
         </div>
       ) : modelStatus ? (
-        <div className="flex-1 min-h-0 overflow-y-auto space-y-6">
+        <div className="flex-1 min-h-0 overflow-y-auto space-y-6 pb-6">
           {sections.map((section) => (
             <div key={section.label}>
               <h2 className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-1 px-1">
