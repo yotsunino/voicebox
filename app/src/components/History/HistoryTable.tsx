@@ -673,7 +673,7 @@ export function HistoryTable() {
                               variant="ghost"
                               size="icon"
                               className="h-6 w-6 text-muted-foreground/50 hover:bg-muted-foreground/20 hover:text-muted-foreground"
-                              aria-label="Actions"
+                              aria-label={t('history.actions.menu')}
                               disabled={isGenerating}
                             >
                               <MoreHorizontal className="h-2 w-2" />
@@ -684,37 +684,36 @@ export function HistoryTable() {
                               onClick={() => handlePlay(gen.id, gen.text, gen.profile_id)}
                             >
                               <Play className="mr-2 h-4 w-4" />
-                              Play
+                              {t('history.actions.play')}
                             </DropdownMenuItem>
                             <DropdownMenuItem
                               onClick={() => handleDownloadAudio(gen.id, gen.text)}
                               disabled={exportGenerationAudio.isPending}
                             >
                               <Download className="mr-2 h-4 w-4" />
-                              Export Audio
+                              {t('history.actions.exportAudio')}
                             </DropdownMenuItem>
                             <DropdownMenuItem
                               onClick={() => handleExportPackage(gen.id, gen.text)}
                               disabled={exportGeneration.isPending}
                             >
                               <FileArchive className="mr-2 h-4 w-4" />
-                              Export Package
+                              {t('history.actions.exportPackage')}
                             </DropdownMenuItem>
                             <DropdownMenuItem onClick={() => handleApplyEffects(gen.id)}>
                               <Wand2 className="mr-2 h-4 w-4" />
-                              Apply Effects
+                              {t('history.actions.applyEffects')}
                             </DropdownMenuItem>
                             <DropdownMenuItem onClick={() => handleRegenerate(gen.id)}>
                               <RotateCcw className="mr-2 h-4 w-4" />
-                              Regenerate
+                              {t('history.actions.regenerate')}
                             </DropdownMenuItem>
                             <DropdownMenuItem
                               onClick={() => handleDeleteClick(gen.id, gen.profile_name)}
                               disabled={deleteGeneration.isPending}
-                              // className="text-destructive focus:text-destructive"
                             >
                               <Trash2 className="mr-2 h-4 w-4" />
-                              Delete
+                              {t('common.delete')}
                             </DropdownMenuItem>
                           </DropdownMenuContent>
                         </DropdownMenu>

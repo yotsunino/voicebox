@@ -104,6 +104,10 @@
       "title": "此故事暂无项目",
       "hint": "使用下方输入框生成语音以添加项目"
     },
+    "itemActions": {
+      "playFromHere": "从此处播放",
+      "removeFromStory": "从故事中移除"
+    },
     "toast": {
       "removeFailed": "移除项目失败",
       "reorderFailed": "重新排序项目失败",
@@ -112,6 +116,14 @@
     }
   },
   "history": {
+    "actions": {
+      "menu": "操作",
+      "play": "播放",
+      "exportAudio": "导出音频",
+      "exportPackage": "导出包",
+      "applyEffects": "应用效果",
+      "regenerate": "重新生成"
+    },
     "deleteDialog": {
       "title": "删除生成",
       "body": "确定要删除来自 \"{{name}}\" 的这次生成吗?此操作不可撤销。",
