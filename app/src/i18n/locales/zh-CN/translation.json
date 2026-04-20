@@ -21,6 +21,46 @@
     "settings": "设置",
     "updateBadge": "更新"
   },
+  "audioChannels": {
+    "title": "音频通道",
+    "newChannel": "新建通道",
+    "loading": "加载中…",
+    "confirmDelete": "删除此通道?",
+    "noVoicesAssigned": "未分配声音",
+    "selectDevice": "选择设备",
+    "addDevice": "添加设备",
+    "addVoice": "添加声音",
+    "defaultSuffix": "默认",
+    "empty": {
+      "message": "暂无音频通道。创建您的第一个通道,将声音路由到特定设备。",
+      "action": "创建通道"
+    },
+    "labels": {
+      "outputDevices": "输出设备",
+      "assignedVoices": "已分配声音"
+    },
+    "devices": {
+      "title": "可用设备",
+      "defaultNote": "默认通道使用系统默认设备",
+      "toggleHint": "点击设备以将其添加到或从选定通道中移除",
+      "selectHint": "选择通道以分配设备",
+      "empty": "未找到音频设备",
+      "requiresTauri": "音频设备选择需要 Tauri"
+    },
+    "fields": {
+      "name": "通道名称",
+      "namePlaceholder": "例如:虚拟线缆、广播"
+    },
+    "createDialog": {
+      "title": "创建音频通道",
+      "description": "创建新的音频通道(总线),将声音路由到特定的输出设备。",
+      "action": "创建"
+    },
+    "editDialog": {
+      "title": "编辑通道",
+      "description": "更新通道设置和声音分配。"
+    }
+  },
   "profileForm": {
     "createTitle": "创建声音",
     "editTitle": "编辑声音",

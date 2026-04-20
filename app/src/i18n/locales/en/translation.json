@@ -21,6 +21,46 @@
     "settings": "Settings",
     "updateBadge": "Update"
   },
+  "audioChannels": {
+    "title": "Audio Channels",
+    "newChannel": "New Channel",
+    "loading": "Loading…",
+    "confirmDelete": "Delete this channel?",
+    "noVoicesAssigned": "No voices assigned",
+    "selectDevice": "Select device",
+    "addDevice": "Add device",
+    "addVoice": "Add voice",
+    "defaultSuffix": "default",
+    "empty": {
+      "message": "No audio channels yet. Create your first channel to route voices to specific devices.",
+      "action": "Create Channel"
+    },
+    "labels": {
+      "outputDevices": "Output Devices",
+      "assignedVoices": "Assigned Voices"
+    },
+    "devices": {
+      "title": "Available Devices",
+      "defaultNote": "Default channel uses system default device",
+      "toggleHint": "Click devices to add or remove them from the selected channel",
+      "selectHint": "Select a channel to assign devices",
+      "empty": "No audio devices found",
+      "requiresTauri": "Audio device selection requires Tauri"
+    },
+    "fields": {
+      "name": "Channel Name",
+      "namePlaceholder": "e.g., Virtual Cable, Broadcast"
+    },
+    "createDialog": {
+      "title": "Create Audio Channel",
+      "description": "Create a new audio channel (bus) to route voices to specific output devices.",
+      "action": "Create"
+    },
+    "editDialog": {
+      "title": "Edit Channel",
+      "description": "Update channel settings and voice assignments."
+    }
+  },
   "profileForm": {
     "createTitle": "Create Voice",
     "editTitle": "Edit Voice",
