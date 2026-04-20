@@ -1,5 +1,5 @@
 import { formatDistance } from 'date-fns';
-import { zhCN } from 'date-fns/locale';
+import { ja, zhCN, zhTW } from 'date-fns/locale';
 import i18n from '@/i18n';
 
 export function formatDuration(seconds: number): string {
@@ -9,8 +9,16 @@ export function formatDuration(seconds: number): string {
 }
 
 function getDateLocale() {
-  if (i18n.language === 'zh-CN') return zhCN;
-  return undefined;
+  switch (i18n.language) {
+    case 'ja':
+      return ja;
+    case 'zh-CN':
+      return zhCN;
+    case 'zh-TW':
+      return zhTW;
+    default:
+      return undefined;
+  }
 }
 
 export function formatDate(date: string | Date): string {
