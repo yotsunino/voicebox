@@ -243,6 +243,9 @@ jobs:
           KEY_PATH="$HOME/.appstoreconnect/private_keys/AuthKey_${APPLE_API_KEY_ID}.p8"
           TARGET=$(echo "${{ matrix.args }}" | sed -n 's/.*--target \([a-z0-9_-]*\).*/\1/p')
           DMG_DIR="tauri/src-tauri/target/${TARGET}/release/bundle/dmg"
+          # Match the release tag tauri-action resolved from tauri.conf.json's
+          # version field; GITHUB_REF_NAME is a branch name under workflow_dispatch.
+          RELEASE_TAG="v$(jq -r '.version' tauri/src-tauri/tauri.conf.json)"
           shopt -s nullglob
           dmgs=("${DMG_DIR}"/*.dmg)
           if [ ${#dmgs[@]} -eq 0 ]; then
@@ -258,7 +261,7 @@ jobs:
               --wait --timeout 20m
             xcrun stapler staple "$dmg"
             spctl -a -t open --context context:primary-signature -vv "$dmg"
-            gh release upload "${GITHUB_REF_NAME}" "$dmg" --clobber \
+            gh release upload "${RELEASE_TAG}" "$dmg" --clobber \
               --repo "${GITHUB_REPOSITORY}"
             echo "::endgroup::"
           done
