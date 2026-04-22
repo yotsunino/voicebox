@@ -20,6 +20,7 @@ class VoiceProfileCreate(BaseModel):
     preset_voice_id: Optional[str] = Field(None, max_length=100)
     design_prompt: Optional[str] = Field(None, max_length=2000)
     default_engine: Optional[str] = Field(None, max_length=50)
+    personality: Optional[str] = Field(None, max_length=2000)
 
 
 class VoiceProfileResponse(BaseModel):
@@ -36,6 +37,7 @@ class VoiceProfileResponse(BaseModel):
     preset_voice_id: Optional[str] = None
     design_prompt: Optional[str] = None
     default_engine: Optional[str] = None
+    personality: Optional[str] = None
     generation_count: int = 0
     sample_count: int = 0
     created_at: datetime
@@ -107,6 +109,7 @@ class GenerationResponse(BaseModel):
     status: str = "completed"
     error: Optional[str] = None
     is_favorited: bool = False
+    source: str = "manual"
     created_at: datetime
     versions: Optional[List["GenerationVersionResponse"]] = None
     active_version_id: Optional[str] = None
@@ -311,6 +314,53 @@ class LLMGenerateResponse(BaseModel):
 
     text: str
     model_size: str
+
+
+# ── Profile personality endpoints ─────────────────────────────────────
+# compose / rewrite / respond return raw text; /speak chains LLM → TTS
+# and either persists as a generation (persist=true) or streams audio
+# back transiently.
+
+
+class PersonalityTextRequest(BaseModel):
+    """Body for ``/profiles/{id}/rewrite`` and ``/profiles/{id}/respond``."""
+
+    text: str = Field(..., min_length=1, max_length=10000)
+
+
+class PersonalityTextResponse(BaseModel):
+    """Response returned by compose / rewrite / respond endpoints."""
+
+    text: str
+    model_size: str
+
+
+class PersonalitySpeakRequest(BaseModel):
+    """Body for ``/profiles/{id}/speak`` — LLM transform then TTS."""
+
+    text: str = Field(..., min_length=1, max_length=10000)
+    # When true, the generated audio is persisted as a regular row in the
+    # generations table (tagged with ``source="personality_speak"``) and
+    # the response returns a GenerationResponse the client polls like any
+    # other generation. When false, the LLM output is fed to a synchronous
+    # TTS call and the wav bytes stream back directly.
+    persist: bool = True
+    language: Optional[str] = Field(
+        None,
+        pattern="^(zh|en|ja|ko|de|fr|ru|pt|es|it|he|ar|da|el|fi|hi|ms|nl|no|pl|sv|sw|tr)$",
+    )
+    engine: Optional[str] = Field(
+        None,
+        pattern="^(qwen|qwen_custom_voice|luxtts|chatterbox|chatterbox_turbo|tada|kokoro)$",
+    )
+    # ``respond`` is the default because this endpoint is designed for
+    # conversational / agent-style callers. Override to ``rewrite`` to
+    # speak the user's text in character verbatim, or ``compose`` to
+    # speak an utterance the character would come up with on its own
+    # (in which case ``text`` is treated as a topical hint, not content).
+    intent: str = Field(
+        default="respond", pattern="^(respond|rewrite|compose)$"
+    )
 
 
 class HealthResponse(BaseModel):

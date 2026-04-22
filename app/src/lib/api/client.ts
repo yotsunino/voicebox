@@ -18,6 +18,7 @@ import type {
   ModelDownloadRequest,
   ModelStatusListResponse,
   PresetVoice,
+  PersonalityTextResponse,
   ProfileSampleResponse,
   StoryCreate,
   StoryDetailResponse,
@@ -122,6 +123,26 @@ class ApiClient {
   async deleteProfile(profileId: string): Promise<void> {
     await this.request<void>(`/profiles/${profileId}`, {
       method: 'DELETE',
+    });
+  }
+
+  // ── Personality-driven text generation ─────────────────────────────
+  // compose + rewrite power the generate-box buttons. Respond and speak
+  // are API-only for now — if a UI use appears, add methods here.
+
+  async composeWithPersonality(profileId: string): Promise<PersonalityTextResponse> {
+    return this.request<PersonalityTextResponse>(`/profiles/${profileId}/compose`, {
+      method: 'POST',
+    });
+  }
+
+  async rewriteWithPersonality(
+    profileId: string,
+    text: string,
+  ): Promise<PersonalityTextResponse> {
+    return this.request<PersonalityTextResponse>(`/profiles/${profileId}/rewrite`, {
+      method: 'POST',
+      body: JSON.stringify({ text }),
     });
   }
 

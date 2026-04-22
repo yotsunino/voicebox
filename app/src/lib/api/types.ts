@@ -12,6 +12,8 @@ export interface VoiceProfileCreate {
   preset_voice_id?: string;
   design_prompt?: string;
   default_engine?: string;
+  /** Free-form character prompt used by compose / rewrite / respond / speak. */
+  personality?: string;
 }
 
 export interface VoiceProfileResponse {
@@ -26,10 +28,17 @@ export interface VoiceProfileResponse {
   preset_voice_id?: string;
   design_prompt?: string;
   default_engine?: string;
+  personality?: string | null;
   generation_count: number;
   sample_count: number;
   created_at: string;
   updated_at: string;
+}
+
+/** Response returned by /profiles/{id}/compose | /rewrite | /respond. */
+export interface PersonalityTextResponse {
+  text: string;
+  model_size: string;
 }
 
 export interface PresetVoice {
