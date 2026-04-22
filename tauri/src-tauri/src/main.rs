@@ -759,11 +759,20 @@ fn stop_audio_playback(
     state.stop_all_playback()
 }
 
-/// Bundle id of the Voicebox app itself — used to short-circuit auto-paste
+/// Identifier of the Voicebox app itself — used to short-circuit auto-paste
 /// when the user fires a chord while focus was inside one of our own
 /// windows. Paste into Voicebox-internal targets is step 6 territory and
 /// goes through a different (JS-side) injection path.
+///
+/// Value matches what `focus_capture::capture_focus` writes into
+/// `FocusSnapshot::bundle_id` on the current platform — reverse-DNS bundle
+/// id on macOS, lowercased exe basename on Windows/Linux.
+#[cfg(target_os = "macos")]
 const VOICEBOX_BUNDLE_ID: &str = "sh.voicebox.app";
+#[cfg(target_os = "windows")]
+const VOICEBOX_BUNDLE_ID: &str = "voicebox.exe";
+#[cfg(not(any(target_os = "macos", target_os = "windows")))]
+const VOICEBOX_BUNDLE_ID: &str = "voicebox";
 
 /// Milliseconds to wait between activating the target app and firing the
 /// synthetic ⌘V, giving AppKit time to finish re-ordering windows and

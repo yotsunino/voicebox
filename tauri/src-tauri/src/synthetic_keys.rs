@@ -1,21 +1,24 @@
 //! Synthetic keyboard event posting for the auto-paste pipeline.
 //!
-//! `send_paste` fires the four-event Cmd-V sequence (Cmd down, V down with
-//! Cmd flag, V up with Cmd flag, Cmd up) via CoreGraphics' `CGEventPost`.
-//! The clipboard module has already staged the text; once the key events
-//! land, the focused app performs its native paste action.
+//! `send_paste` fires the four-event paste sequence onto the OS input
+//! pipeline so the focused app performs its native paste action against
+//! whatever the clipboard module has just staged.
 //!
-//! Accessibility permission is load-bearing here. Without it, `CGEventPost`
-//! silently no-ops — the system swallows the events rather than delivering
-//! them, so a missing permission looks like "nothing happened" rather than
-//! an error. Callers should gate this behind [`crate::accessibility::is_trusted`]
-//! and surface a setup prompt when it returns false.
+//! - **macOS** — Cmd down, V down with Cmd flag, V up with Cmd flag, Cmd
+//!   up via `CGEventPost` at `kCGHIDEventTap`. Accessibility permission is
+//!   load-bearing: without it the system swallows the events silently, so
+//!   callers must gate on [`crate::accessibility::is_trusted`].
+//! - **Windows** — Ctrl down, V down, V up, Ctrl up via `SendInput`. No
+//!   permission gate, but UAC/UIPI blocks delivery into elevated target
+//!   windows when we run non-elevated — nothing we can do short of also
+//!   running elevated.
 //!
-//! The virtual keycode used for V is `kVK_ANSI_V` (9), which is
-//! layout-dependent: it means "the physical key in the QWERTY V position".
-//! On Dvorak / Colemak layouts this would fire the wrong shortcut — a
-//! future pass will resolve the current layout's V keycode via
-//! `TISCopyCurrentKeyboardInputSource` + `UCKeyTranslate`.
+//! The virtual keycode used for V is `kVK_ANSI_V` (9) on macOS and `VK_V`
+//! (0x56) on Windows. Both are layout-dependent — they mean "the physical
+//! key in the QWERTY V position" — so on Dvorak / Colemak this would fire
+//! the wrong shortcut. A later pass will resolve the current layout's V
+//! keycode per-platform (`TISCopyCurrentKeyboardInputSource` +
+//! `UCKeyTranslate` on macOS; `VkKeyScanExW` on Windows).
 
 #[cfg(target_os = "macos")]
 use std::ffi::c_void;
@@ -131,7 +134,67 @@ pub fn send_paste() -> Result<(), String> {
     }
 }
 
-#[cfg(not(target_os = "macos"))]
+#[cfg(target_os = "windows")]
+mod win {
+    use windows::Win32::UI::Input::KeyboardAndMouse::{
+        INPUT, INPUT_0, INPUT_KEYBOARD, KEYBDINPUT, KEYBD_EVENT_FLAGS, KEYEVENTF_KEYUP,
+        VIRTUAL_KEY,
+    };
+
+    pub fn make_key(vk: VIRTUAL_KEY, up: bool) -> INPUT {
+        let flags = if up {
+            KEYEVENTF_KEYUP
+        } else {
+            KEYBD_EVENT_FLAGS(0)
+        };
+        INPUT {
+            r#type: INPUT_KEYBOARD,
+            Anonymous: INPUT_0 {
+                ki: KEYBDINPUT {
+                    wVk: vk,
+                    wScan: 0,
+                    dwFlags: flags,
+                    time: 0,
+                    dwExtraInfo: 0,
+                },
+            },
+        }
+    }
+}
+
+#[cfg(target_os = "windows")]
 pub fn send_paste() -> Result<(), String> {
-    Err("synthetic paste is only implemented on macOS".into())
+    use windows::Win32::UI::Input::KeyboardAndMouse::{
+        SendInput, INPUT, VK_CONTROL, VK_V,
+    };
+
+    // Four-event Ctrl+V sequence. Matches the macOS CGEvent pattern: the
+    // modifier brackets the letter so the target app sees a fully formed
+    // accelerator rather than a lone V. `dwExtraInfo` is zero — we're not
+    // tagging these as "ours" because no consumer in the paste path needs
+    // to distinguish synthetic events from hardware ones.
+    let events = [
+        win::make_key(VK_CONTROL, false),
+        win::make_key(VK_V, false),
+        win::make_key(VK_V, true),
+        win::make_key(VK_CONTROL, true),
+    ];
+
+    unsafe {
+        let sent = SendInput(&events, std::mem::size_of::<INPUT>() as i32);
+        if sent as usize != events.len() {
+            return Err(format!(
+                "SendInput delivered {} of {} events — the input desktop may be locked (secure attention sequence) or a higher-integrity window is intercepting.",
+                sent,
+                events.len()
+            ));
+        }
+    }
+
+    Ok(())
+}
+
+#[cfg(not(any(target_os = "macos", target_os = "windows")))]
+pub fn send_paste() -> Result<(), String> {
+    Err("synthetic paste is not yet implemented on this platform".into())
 }

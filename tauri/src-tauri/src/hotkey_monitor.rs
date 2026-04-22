@@ -21,27 +21,36 @@ use crate::chord_engine::{Bindings, ChordAction, ChordEngine, Effect, InputEvent
 use crate::focus_capture;
 use crate::DICTATE_WINDOW_LABEL;
 
-/// Hardcoded Pass 1 defaults. Right-hand Cmd + right-hand Option so left-hand
-/// modifier shortcuts pass through unaffected. Replaced in Pass 2 by reading
-/// from the server-side `capture_settings` table via a Tauri command the
-/// frontend invokes whenever `useCaptureSettings` resolves.
+/// Hardcoded Pass 1 defaults. Two right-hand modifiers so the usual left-hand
+/// shortcuts pass through unaffected. Replaced in Pass 2 by reading from the
+/// server-side `capture_settings` table via a Tauri command the frontend
+/// invokes whenever `useCaptureSettings` resolves.
 ///
-/// macOS key mapping in rdev:
-/// - `Key::MetaRight` — right Command
-/// - `Key::AltGr` — right Option (rdev labels right-option as "AltGr" for
-///   Linux-convention symmetry; on macOS it's the physical right-option key)
+/// - **macOS:** `MetaRight + AltGr` — right Command + right Option. (rdev
+///   labels right-Option as `AltGr` for Linux-convention symmetry; on macOS
+///   it's the physical right-option key.)
+/// - **Windows / Linux:** `ControlRight + ShiftRight` — right Ctrl + right
+///   Shift. Deliberately avoids `AltGr`: on international Windows layouts
+///   the OS synthesises `AltGr` as `Ctrl+Alt`, so any `AltGr`-involving
+///   default would fire on every `@`, `€`, `\` keypress on German / French
+///   / Spanish keyboards.
 pub fn default_bindings() -> Bindings {
+    #[cfg(target_os = "macos")]
+    let (m1, m2) = (Key::MetaRight, Key::AltGr);
+    #[cfg(not(target_os = "macos"))]
+    let (m1, m2) = (Key::ControlRight, Key::ShiftRight);
+
     let mut b = Bindings::new();
     b.insert(ChordAction::PushToTalk, {
         let mut s = KeyChord::new();
-        s.insert(Key::MetaRight);
-        s.insert(Key::AltGr);
+        s.insert(m1);
+        s.insert(m2);
         s
     });
     b.insert(ChordAction::ToggleToTalk, {
         let mut s = KeyChord::new();
-        s.insert(Key::MetaRight);
-        s.insert(Key::AltGr);
+        s.insert(m1);
+        s.insert(m2);
         s.insert(Key::Space);
         s
     });
