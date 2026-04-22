@@ -170,6 +170,149 @@ class TranscriptionResponse(BaseModel):
     duration: float
 
 
+class RefinementFlagsModel(BaseModel):
+    """Boolean toggles that drive the refinement prompt builder."""
+
+    smart_cleanup: bool = True
+    self_correction: bool = True
+    preserve_technical: bool = True
+
+
+class CaptureResponse(BaseModel):
+    """Response model for a capture."""
+
+    id: str
+    audio_path: str
+    source: str
+    language: Optional[str] = None
+    duration_ms: Optional[int] = None
+    transcript_raw: str
+    transcript_refined: Optional[str] = None
+    stt_model: Optional[str] = None
+    llm_model: Optional[str] = None
+    refinement_flags: Optional[RefinementFlagsModel] = None
+    created_at: datetime
+
+    class Config:
+        from_attributes = True
+
+
+class CaptureListResponse(BaseModel):
+    """Response model for paginated capture list."""
+
+    items: List[CaptureResponse]
+    total: int
+
+
+class CaptureCreateResponse(CaptureResponse):
+    """
+    Response model for ``POST /captures``.
+
+    Adds ``auto_refine`` and ``allow_auto_paste`` — the server-side settings
+    captured at the moment the capture was created. The client reads these to
+    decide whether to chain a refinement request and whether to fire the
+    synthetic-paste pipeline, so it doesn't need a synced local copy of the
+    capture_settings table across sibling Tauri webviews.
+    """
+
+    auto_refine: bool
+    allow_auto_paste: bool
+
+
+class CaptureRefineRequest(BaseModel):
+    """Request to refine a capture's transcript via the LLM."""
+
+    flags: Optional[RefinementFlagsModel] = None
+    model_size: Optional[str] = Field(default=None, pattern="^(0\\.6B|1\\.7B|4B)$")
+
+
+class CaptureRetranscribeRequest(BaseModel):
+    """Request to re-run STT on a capture's audio with a different model."""
+
+    model: Optional[str] = Field(None, pattern="^(base|small|medium|large|turbo)$")
+    language: Optional[str] = Field(None, pattern="^(en|zh|ja|ko|de|fr|ru|pt|es|it)$")
+
+
+class CaptureSettingsResponse(BaseModel):
+    """Server-persisted defaults for the capture / refine flow."""
+
+    stt_model: str = Field(default="turbo", pattern="^(base|small|medium|large|turbo)$")
+    language: str = Field(default="auto")
+    auto_refine: bool = True
+    llm_model: str = Field(default="0.6B", pattern="^(0\\.6B|1\\.7B|4B)$")
+    smart_cleanup: bool = True
+    self_correction: bool = True
+    preserve_technical: bool = True
+    allow_auto_paste: bool = True
+    default_playback_voice_id: Optional[str] = None
+    chord_push_to_talk_keys: List[str] = Field(default_factory=lambda: ["MetaRight", "AltGr"])
+    chord_toggle_to_talk_keys: List[str] = Field(
+        default_factory=lambda: ["MetaRight", "AltGr", "Space"]
+    )
+
+    class Config:
+        from_attributes = True
+
+
+class CaptureSettingsUpdate(BaseModel):
+    """Partial update for capture settings — every field is optional."""
+
+    stt_model: Optional[str] = Field(default=None, pattern="^(base|small|medium|large|turbo)$")
+    language: Optional[str] = None
+    auto_refine: Optional[bool] = None
+    llm_model: Optional[str] = Field(default=None, pattern="^(0\\.6B|1\\.7B|4B)$")
+    smart_cleanup: Optional[bool] = None
+    self_correction: Optional[bool] = None
+    preserve_technical: Optional[bool] = None
+    allow_auto_paste: Optional[bool] = None
+    default_playback_voice_id: Optional[str] = None
+    chord_push_to_talk_keys: Optional[List[str]] = Field(default=None, min_length=1, max_length=6)
+    chord_toggle_to_talk_keys: Optional[List[str]] = Field(default=None, min_length=1, max_length=6)
+
+
+class GenerationSettingsResponse(BaseModel):
+    """Server-persisted defaults for the generation flow."""
+
+    max_chunk_chars: int = Field(default=800, ge=100, le=5000)
+    crossfade_ms: int = Field(default=50, ge=0, le=500)
+    normalize_audio: bool = True
+    autoplay_on_generate: bool = True
+
+    class Config:
+        from_attributes = True
+
+
+class GenerationSettingsUpdate(BaseModel):
+    """Partial update for generation settings — every field is optional."""
+
+    max_chunk_chars: Optional[int] = Field(default=None, ge=100, le=5000)
+    crossfade_ms: Optional[int] = Field(default=None, ge=0, le=500)
+    normalize_audio: Optional[bool] = None
+    autoplay_on_generate: Optional[bool] = None
+
+
+class LLMGenerateRequest(BaseModel):
+    """Request model for LLM text generation."""
+
+    prompt: str = Field(..., min_length=1, max_length=50000)
+    system: Optional[str] = Field(None, max_length=4000)
+    model_size: Optional[str] = Field(default="0.6B", pattern="^(0\\.6B|1\\.7B|4B)$")
+    max_tokens: int = Field(default=512, ge=1, le=4096)
+    temperature: float = Field(default=0.7, ge=0.0, le=2.0)
+    # Few-shot (user, assistant) pairs prepended as real chat turns.
+    # Used by the refinement service to pin tricky rules (imperatives
+    # staying imperatives, technical-term punctuation) that small models
+    # lose when the examples live inline in the system prompt.
+    examples: Optional[List[List[str]]] = Field(default=None, max_length=8)
+
+
+class LLMGenerateResponse(BaseModel):
+    """Response model for LLM text generation."""
+
+    text: str
+    model_size: str
+
+
 class HealthResponse(BaseModel):
     """Response model for health check."""
 
