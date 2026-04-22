@@ -33,6 +33,10 @@ class VoiceProfile(Base):
     preset_voice_id = Column(String, nullable=True)  # e.g. "am_adam" — only for preset
     design_prompt = Column(Text, nullable=True)      # text description — only for designed
     default_engine = Column(String, nullable=True)   # auto-selected engine, locked for preset
+    # Free-form character prompt used by the compose / rewrite / respond / speak
+    # endpoints. Describes *what* this voice says and how, orthogonal to how
+    # it sounds (which is handled by the preset / cloning metadata above).
+    personality = Column(Text, nullable=True)
 
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
@@ -67,6 +71,10 @@ class Generation(Base):
     status = Column(String, default="completed")
     error = Column(Text, nullable=True)
     is_favorited = Column(Boolean, default=False)
+    # Origin of this generation — "manual" for regular /generate calls,
+    # "personality_speak" for rows created by POST /profiles/{id}/speak.
+    # Future sources (bulk import, agent replies, etc.) can extend this.
+    source = Column(String, nullable=False, default="manual")
     created_at = Column(DateTime, default=datetime.utcnow)
 
 
