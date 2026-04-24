@@ -76,7 +76,11 @@
         { "target": "deb", "arch": ["x64"] }
       ],
       "icon": "build/icon.png",
-      "category": "Utility"
+      "category": "Utility",
+      "desktop": {
+        "StartupNotify": "true",
+        "Comment": "Text-to-speech application"
+      }
     }
   }
 }
