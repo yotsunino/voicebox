@@ -78,7 +78,7 @@
       "icon": "build/icon.png",
       "category": "Utility",
       "desktop": {
-        "StartupNotify": "true",
+        "StartupNotify": "false",
         "Comment": "Text-to-speech application"
       }
     }
