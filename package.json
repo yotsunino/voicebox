@@ -79,6 +79,7 @@
       "category": "Utility",
       "desktop": {
         "StartupNotify": "false",
+        "Exec": "voicebox %U",
         "Comment": "Text-to-speech application"
       }
     }
